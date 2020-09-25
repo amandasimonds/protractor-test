@@ -7,10 +7,32 @@ describe('Protractor Demo App', function() {
     var goButton = element(by.id('gobutton'));
     var latestResult = element(by.binding('latest'));
 
+    //element.all returns an ElementArrayFinder
+    var history = element.all(by.repeater('result in memory'));
+
+    function add(a, b) {
+        firstNumber.sendKeys(a);
+        secondNumber.sendKeys(b);
+        goButton.click();
+    }
     //run before every it block
     beforeEach(function(){
         //broswer is a global created by protractor, used for browser level commands like browser.get
         browser.get("http://juliemr.github.io/protractor-demo/")
+    });
+
+    it("should have a history", function(){
+        add(1,2);
+        add(3,4);
+
+        //count is the expected length
+        expect(history.count()).toEqual(2);
+        //last will report the oldest result at the bottom of the history
+        expect(history.last().getText()).toContain("1 + 2");
+        expect(history.first().getText()).toContain("3 + 4");
+
+        // add(5, 6);
+        // expect(history.count()).toEqual(3);
     })
 
     it('should have a title', function() {
